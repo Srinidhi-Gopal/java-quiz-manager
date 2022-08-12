@@ -56,7 +56,7 @@ public class MCQChoice {
 
     @Override
     public String toString() {
-        return "[Question : \n" + getMcqQuestion() + "\n" +
+        return "\n" + getMcqQuestion() + "\n" +
                 "[Choice: \"" + getChoice() + ", Valid: \"" + getValid() + "\"]";
     }
 }

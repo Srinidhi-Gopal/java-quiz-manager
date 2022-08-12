@@ -94,23 +94,21 @@ public class MCQChoiceDAO {
         return this.mcqChoiceId;
     }
 
-    public void updateMCQChoice(MCQChoice mcqChoice,Integer mcqQuestionId, Integer mcqChoiceId) throws SQLException {
+    public void updateMCQChoice(MCQChoice mcqChoice,Integer mcqChoiceId) throws SQLException {
         Connection con = connectionDAO.makeDBConnection();
 
         try{
             PreparedStatement ps = con.prepareStatement("UPDATE MCQ_CHOICES SET choice = ?" +
                     ", valid = ?" +
-                    " WHERE mcq_id = ?" +
-                    " AND mcq_choice_id = ?");
+                    " WHERE mcq_choice_id = ?");
             ps.setString(1, mcqChoice.getChoice());
             ps.setBoolean(2, mcqChoice.getValid());
-            ps.setString(3, String.valueOf(mcqQuestionId));
-            ps.setString(4, String.valueOf(mcqChoiceId));
+            ps.setString(3, String.valueOf(mcqChoiceId));
 
             ps.execute();
 
         } catch (Exception e) {
-            System.out.println("Error while updating choice : " + mcqChoiceId + " : of question : " + mcqQuestionId);
+            System.out.println("Error while updating choice : " + mcqChoiceId);
             e.printStackTrace();
         }
 
