@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<MCQQuiz>
+	<question value="Question 5 : what is d/dx(sin x)?">
+		<choiceList>
+			<choice1 choiceId="1">-cos x</choice1>
+			<choice2 choiceId="2">cos x</choice2>
+		</choiceList>
+	</question>
+	<question value="Question 6 : what is d/dx(cos x)?">
+		<choiceList>
+			<choice1 choiceId="1">-sin x</choice1>
+			<choice2 choiceId="2">sin x</choice2>
+		</choiceList>
+	</question>
+	<question value="Question 7 : what is sin(0)?">
+		<choiceList>
+			<choice1 choiceId="1">0</choice1>
+			<choice2 choiceId="2">1</choice2>
+		</choiceList>
+	</question>
+</MCQQuiz>

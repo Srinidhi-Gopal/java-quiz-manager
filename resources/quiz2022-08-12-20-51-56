@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><quiz><question>Question 3 : what is sout(y++) if y=3?<choice choiceId="2">4</choice><choice choiceId="3">3</choice><choice choiceId="4">y++</choice></question><question>Question 6 : what is d/dx(cos x)?<choice choiceId="2">-sin x</choice><choice choiceId="3">sin x</choice></question></quiz>

@@ -1,4 +1,4 @@
-package fr.epita.quizTest;
+package fr.epita.quizTest.testQuizBL;
 
 import fr.epita.quiz.datamodel.MCQChoice;
 import fr.epita.quiz.services.businessLogic.QuizBL;
@@ -35,7 +35,7 @@ public class TestQuizBLPrepareMCQQuiz {
         Map<String, List<MCQChoice>> mcqQuestionList = quizBL.getSelectedMCQQuestion(quesIntList);
 
         System.out.println("Preparing MCQ Quiz as an XML File");
-        quizBL.prepareMCQQuiz(mcqQuestionList);
+        quizBL.prepareMCQQuiz(mcqQuestionList, "RANDOM");
         System.out.println("Prepared MCQ Quiz\n\n" +
                 "Please Check ./resources folder with file name : 'randomMCQQuiz' followed by timestamp in format yyyy-MM-dd-HH-mm-ss");
 

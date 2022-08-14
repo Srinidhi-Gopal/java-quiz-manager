@@ -1,4 +1,4 @@
-package fr.epita.quizTest;
+package fr.epita.quizTest.testQuizBL;
 
 import fr.epita.quiz.datamodel.MCQChoice;
 import fr.epita.quiz.services.businessLogic.QuizBL;

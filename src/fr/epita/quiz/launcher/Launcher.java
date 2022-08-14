@@ -1,13 +1,11 @@
 package fr.epita.quiz.launcher;
 
-import fr.epita.quizTest.TestQuizBLPrepareMCQQuiz;
-import fr.epita.quizTest.TestQuizBLPrepareOpenExam;
-import fr.epita.quizTest.TestQuizBLShowMCQQuestionWithChoice;
-import fr.epita.quizTest.TestQuizBLShowOpenQuestions;
 import fr.epita.quizTest.testMCQChoiceDAO.*;
 import fr.epita.quizTest.testOpenQuestionDAO.*;
+import fr.epita.quizTest.testQuizBL.*;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,7 +24,7 @@ public class Launcher {
         if("y".equals(isTeacher) || "Y".equals(isTeacher) || "yes".equals(isTeacher) || "YES".equals(isTeacher) || "Yes".equals(isTeacher)) {
             teacherMenu();
         } else {
-            System.out.println("Yet to be implemented");
+            studentMenu();
         }
         scanner.close();
     }
@@ -74,7 +72,7 @@ public class Launcher {
             System.out.println("8. Prepare Random Open Question Exam");
             System.out.println("9. Prepare Topic Based MCQ Quiz");
             System.out.println("10. Prepare Topic Based Open Question Exam");
-            System.out.println("11. Exit");
+            System.out.println("11. EXIT");
             System.out.println("\nPlease Enter your Choice (1 to 11) : ");
             Integer choice = scanner.nextInt();
 
@@ -157,20 +155,35 @@ public class Launcher {
 
                 case 9:
                     System.out.println("Prepare Topic Based MCQ Quiz");
-                    return;
+                    try {
+                        TestQuizBLPrepareTopicMCQQuiz topicMCQQuiz = new TestQuizBLPrepareTopicMCQQuiz();
+                        topicMCQQuiz.test();
+                    } catch (ParserConfigurationException e) {
+                        System.out.println("Error while preparing Topic Based MCQ Quiz");
+                        System.out.println(e.getMessage());
+                    }
+                    break;
 
                 case 10:
                     System.out.println("Prepare Topic Based Open Question Exam");
+                    try {
+                        TestQuizBLPrepareTopicOpenExam openTopicExam = new TestQuizBLPrepareTopicOpenExam();
+                        openTopicExam.test();
+                    } catch (ParserConfigurationException e) {
+                        System.out.println("Error while preparing Topic Based Open Exam");
+                        System.out.println(e.getMessage());
+                    }
                     break;
 
                 case 11:
                     System.out.println("Exiting. Good Bye!");
-                    break;
+                    return;
 
                 default:
                     System.out.println("Invalid Choice! Please Try Again\n");
                     break;
             }
+
         }
 
     }
@@ -305,6 +318,30 @@ public class Launcher {
         }
 
     }
-}
 
+    public static void studentMenu() {
+
+        String[] files;
+        File file = new File("./resources");
+        files = file.list();
+
+        if (files.length == 0) {
+            System.out.println("No Quiz has been Uploaded yet by the Teacher. Good Bye!\n");
+            return;
+        }
+
+        System.out.println("Below is the list of quiz that has been uploaded by Teachers\n");
+        for (String f : files) {
+            System.out.println(f);
+        }
+
+        System.out.println("\nFrom the above list of quiz, enter carefully the name of a OPEN EXAM you would like to see : ");
+        String quizToCheck = scanner.next();
+
+        TestQuizBLParseXMLFile parseXMLFile = new TestQuizBLParseXMLFile();
+
+        parseXMLFile.test(quizToCheck);
+
+    }
+}
 

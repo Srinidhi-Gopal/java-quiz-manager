@@ -7,6 +7,9 @@ import fr.epita.quiz.services.dao.CreateDBConnectionDAO;
 import fr.epita.quiz.services.dao.OpenQuestionDAO;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +19,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -135,36 +139,47 @@ public class QuizBL {
         return mcqQuestionList;
     }
 
-    public static void prepareMCQQuiz(Map<String, List<MCQChoice>> mcqQuestionList) throws ParserConfigurationException {
+    public static void prepareMCQQuiz(Map<String, List<MCQChoice>> mcqQuestionList, String type) throws ParserConfigurationException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document dom = docBuilder.newDocument();
-        Element e = null, c = null;
+        Element e = null, c = null, m = null;
         Integer num = 1;
-        Element rootElement = dom.createElement("randomMCQQuiz");
+        Element rootElement = dom.createElement("MCQQuiz");
 
         for(Map.Entry<String, List<MCQChoice>> entry : mcqQuestionList.entrySet()) {
 
             num = 0;
             e = dom.createElement("question");
-            e.appendChild(dom.createTextNode(entry.getKey()));
+            e.setAttribute("value", entry.getKey());
+            m = dom.createElement("choiceList");
 
             for(MCQChoice choice : entry.getValue()) {
                 num = num + 1;
                 String choiceNum = String.valueOf(num);
-                c = dom.createElement("choice");
+                String choiceTag = "choice" + choiceNum;
+                c = dom.createElement(choiceTag);
                 c.setAttribute("choiceId", choiceNum);
                 c.appendChild(dom.createTextNode(choice.getChoice()));
-                e.appendChild(c);
+                m.appendChild(c);
             }
 
+            e.appendChild(m);
             rootElement.appendChild(e);
         }
 
         dom.appendChild(rootElement);
 
-        String fileName = "./resources/randomMCQQuiz" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        String fileName;
+
+        if ("RANDOM".equals(type)) {
+            fileName = "./resources/randomMCQQuiz" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        } else if ("TOPIC".equals(type)) {
+            fileName = "./resources/topicMCQQuiz" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        } else {
+            fileName = "./resources/MCQQuiz" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        }
         try (FileOutputStream output = new FileOutputStream(fileName)) {
             writeXml(dom, output);
         } catch (IOException exe) {
@@ -172,7 +187,6 @@ public class QuizBL {
         } catch (TransformerException ex) {
             throw new RuntimeException(ex);
         }
-
     }
 
     private static void writeXml(Document doc, OutputStream output) throws TransformerException {
@@ -231,23 +245,31 @@ public class QuizBL {
         return openQuestionMap;
     }
 
-    public static void prepareOpenExam(Map<String, OpenQuestion> openQuestionList) throws ParserConfigurationException {
+    public static void prepareOpenExam(Map<String, OpenQuestion> openQuestionList, String type) throws ParserConfigurationException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document dom = docBuilder.newDocument();
         Element e = null;
-        Element rootElement = dom.createElement("randomOpenExam");
+        Element rootElement = dom.createElement("OpenExam");
 
         for(Map.Entry<String, OpenQuestion> entry : openQuestionList.entrySet()) {
             e = dom.createElement("question");
-            e.appendChild(dom.createTextNode(entry.getValue().getQuestion()));
+            e.setAttribute("value", entry.getValue().getQuestion());
+            //e.appendChild(dom.createTextNode(entry.getValue().getQuestion()));
             rootElement.appendChild(e);
         }
 
         dom.appendChild(rootElement);
 
-        String fileName = "./resources/randomOpenExam" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        String fileName;
+        if("RANDOM".equals(type)) {
+            fileName = "./resources/randomOpenExam" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        } else if ("TOPIC".equals(type)) {
+            fileName = "./resources/topicOpenExam" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        } else {
+            fileName = "./resources/OpenExam" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
+        }
         try (FileOutputStream output = new FileOutputStream(fileName)) {
             writeXml(dom, output);
         } catch (IOException exe) {
@@ -258,4 +280,41 @@ public class QuizBL {
 
     }
 
+    public static void parseXMLFile(String fileName) {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        try{
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            Document doc = db.parse(new File(fileName));
+
+            doc.getDocumentElement().normalize();
+
+            String rootElement = doc.getDocumentElement().getNodeName();
+
+            if("MCQQuiz".equals(rootElement)) {
+                System.out.println("This is a MCQ Quiz. Display of MCQ Quiz is Work in Progress\n");
+                System.out.println("Please refer the " + fileName + " for the XML File of MCQ Questions");
+            } else {
+                System.out.println("This is an Open Exam. Below are the questions\n");
+
+                NodeList list = doc.getElementsByTagName("question");
+                Integer num = 1;
+
+                for (int temp = 0; temp < list.getLength(); temp++) {
+                    Node node = list.item(temp);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        System.out.println((num++) + " : " + element.getAttribute("value"));
+                    }
+                }
+            }
+        } catch (ParserConfigurationException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        } catch (SAXException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

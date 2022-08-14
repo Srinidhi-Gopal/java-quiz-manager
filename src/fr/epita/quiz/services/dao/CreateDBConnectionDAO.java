@@ -19,11 +19,11 @@ public class CreateDBConnectionDAO {
     private String[] getDBDetails() {
         String[] fields = new String[3];
         try{
-            List<String> lines = Files.readAllLines(new File("./resources/db_connection_details.csv").toPath());
+            List<String> lines = Files.readAllLines(new File("./db_connection_details.csv").toPath());
             String line = lines.get(1);
             fields = line.split(",");
         } catch (IOException e) {
-            System.out.println("Error while reading db details from ./resources/db_connection_details.csv");
+            System.out.println("Error while reading db details from ./db_connection_details.csv");
             e.printStackTrace();
         }
         return fields;

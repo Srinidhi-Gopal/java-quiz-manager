@@ -1,4 +1,4 @@
-package fr.epita.quizTest;
+package fr.epita.quizTest.testQuizBL;
 
 import fr.epita.quiz.datamodel.OpenQuestion;
 import fr.epita.quiz.services.businessLogic.QuizBL;
@@ -34,7 +34,7 @@ public class TestQuizBLPrepareOpenExam {
         Map<String, OpenQuestion> selectedQuestionList = quizBL.getSelectedOpenQuestion(quesIntList);
 
         System.out.println("Preparing Random Open Exam as an XML File");
-        quizBL.prepareOpenExam(selectedQuestionList);
+        quizBL.prepareOpenExam(selectedQuestionList, "RANDOM");
         System.out.println("Prepared Random Open Exam\n\n" +
                 "Please Check ./resources folder with file name : 'randomOpenExam' followed by timestamp in format yyyy-MM-dd-HH-mm-ss");
 
